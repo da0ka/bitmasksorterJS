@@ -33,8 +33,8 @@ export function radixBitSorterNumber(array,start,endP1){
 function partitionStableNumber(arrayI32,arrayF64,start,endP1,mask,elementIndex,auxF64){
 	let left=start,right=0;
 	for(let i=start;i<endP1;){
-		let element=arrayF64[i++];
-		arrayI32[i*2+elementIndex]&mask?auxF64[right++]=element:arrayF64[left++]=element
+		let element=arrayF64[i];
+		arrayI32[i++*2+elementIndex]&mask?auxF64[right++]=element:arrayF64[left++]=element
 	}
 	arrayCopy(auxF64,0,arrayF64,left,right);
 	return left
