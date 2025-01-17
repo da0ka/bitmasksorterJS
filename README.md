@@ -7,16 +7,15 @@ This project explores various sorting algorithms employing a BitMask optimizatio
 The following code demonstrates the calculation of the BitMask of a 32-bit number:
 
 ```javascript
-    function calculateMaskInt(array, start, endP1) {
-        let mask = 0x00000000;
-        let inv_mask = 0x00000000;
-        for (let i = start; i < endP1; i++) {
-            let ei = array[i];
-            mask = mask | ei;
-            inv_mask = inv_mask | (~ei);
-        }
-        return mask & inv_mask;
-    }
+function calculateMaskInt(array, start, endP1){
+	let mask = 0, inv_mask = 0;
+	for (let i = start; i < endP1;){
+		let ei = array[i++];
+		mask |= ei;
+		inv_mask |= ~ei
+	}
+	return mask & inv_mask
+}
 ```
 JavaScript Numbers are stored as double-precision floating-point numbers, adhering to the international IEEE 754 standard.
 In JavaScript bit operations are performed on 32-bit numbers.
@@ -55,7 +54,6 @@ sortInt(array);
 // array can be a normal array, Float32Array, Float64Array, Int8Array, Int16Array, Int32Array, Uint8Array, Uint16Array, Uint32Array;
 //   No support for BigInt64 or BigInt64Array();
 sortNumber(array)
-
 ```
 ### For sorting array of objects
 
@@ -65,11 +63,10 @@ This methods automatically use the best algorithm depending on the size of the a
 import {sortObjectInt, sortObjectNumber} from "@aldogg/sorter";
 
 //sortObjectInt can sort objects with negative and positive integer keys in the range -2^31 ... 2^31-1 ONLY
-sortObjectInt(orig, (x) => x.id);
+sortObjectInt(orig, x=>x.id);
 
 //sortObjectNumber can sort objects with IEEE 754 number keys
-sortObjectNumber(orig2, (x) => x.id);
-
+sortObjectNumber(orig2, x=>x.id);
 ```
 
 ## RadixBitSorter:
