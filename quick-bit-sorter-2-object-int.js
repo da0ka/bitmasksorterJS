@@ -27,7 +27,7 @@ function qbSortInt(array,mapper,start,endP1,bList,bListIndex,aux,recalculate){
 	if(recalculate&&bListIndex<3)
 		bList=getMaskAsArray(calculateMaskInt(array,start,endP1,mapper)),bListIndex=0;
 	if(bList.length-bListIndex<1)return;
-	let finalLeft=partitionStableLowMemInt(array,start,endP1,1<<bList[bListIndex],mapper,aux), recalculateBitMask=finalLeft-start<=1||endP1-finalLeft<=1;
+	let finalLeft=partitionStableLowMemInt(array,start,endP1,1<<bList[bListIndex],mapper,aux), recalculateBitMask=finalLeft-start<2||endP1-finalLeft<2;
 	finalLeft-start>1&&qbSortInt(array,mapper,start,finalLeft,bList,bListIndex+1,aux,recalculateBitMask);
 	endP1-finalLeft>1&&qbSortInt(array,mapper,finalLeft,endP1,bList,bListIndex+1,aux,recalculateBitMask)
 }
