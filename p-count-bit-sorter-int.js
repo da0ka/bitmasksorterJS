@@ -37,8 +37,7 @@ when max-min(range > 2**25 is slower than javascript sorter) and when n(endP1-st
 export function pCountNoMaskSorterInt(array, start, endP1, min, max){
 	if(!start)start = 0;
 	if(!endP1)endP1 = array.length;
-	let n = endP1 - start;
-	if(n < 2)return;
+	if(endP1 - start < 2)return;
 	if(!min || !max){
 		min = array[start];max = array[start];
 		for(let i = start;++i < endP1;){
