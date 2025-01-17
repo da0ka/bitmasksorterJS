@@ -3,8 +3,7 @@ import{calculateMaskInt,partitionReverseNotStableUpperBit}from"./sorter-utils-in
 export function aFlagBitSorterInt(array,start,endP1){
 	if(!start)start=0;
 	if(!endP1)endP1=array.length;
-	let n=endP1-start;
-	if(n<2)return;
+	if(endP1-start<2)return;
 	let mask=calculateMaskInt(array,start,endP1);
 	if(!mask)return;
 	let bList=getMaskAsArray(mask);
