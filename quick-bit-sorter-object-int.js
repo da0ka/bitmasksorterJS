@@ -29,13 +29,10 @@ function qbSortInt(array,mapper,start,endP1,bList,bListIndex,aux,recalculate){
 		bList=getMaskAsArray(mask);
 		bListIndex=0;
 	}
-	let kDiff=bList.length-bListIndex;
-	if(kDiff<1){
-		return;
-	}
+	if(bList.length-bListIndex<1)return;
 	let sortMask=1<<bList[bListIndex];
 	let finalLeft=partitionStableInt(array,start,endP1,sortMask,aux,mapper);
-	let recalculateBitMask=(finalLeft-start<=1||endP1-finalLeft<=1);
+	let recalculateBitMask=finalLeft-start<2||endP1-finalLeft<2;
 	if(finalLeft-start>1){
 		qbSortInt(array,mapper,start,finalLeft,bList,bListIndex+1,aux,recalculateBitMask);
 	}
