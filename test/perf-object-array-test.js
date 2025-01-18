@@ -1,70 +1,63 @@
-//import{arrayCopy,sortObjectInt,sortObjectNumber}from"@aldogg/sorter";
-import{
-	arrayCopy,
-	sortObjectInt,
-	sortObjectNumber,quickBitSorterObjectInt,pCountBitSorterObjectInt
-}from"../main.js";
+import{arrayCopy,sortObjectInt,sortObjectNumber,quickBitSorterObjectInt,pCountBitSorterObjectInt}from"../main.js";
 import{testArraysEquals}from"./test-utils.js";
 import{quickBitSorterObjectIntLowMem}from"../quick-bit-sorter-2-object-int.js";
-console.log("Comparing Sorters\n");
+console.log("Comparing Sorters");
 const iterations=4;//use 20 for more accuracy in documented results
 let algorithms=[
 	{
-'name':'JavascriptSorter',
-'sortFunction':(array)=>{
-			array.sort(function(a,b){
-				return a.id-b.id;
-			});
-			return array;
+		'name':'JavascriptSorter',
+		'sortFunction':(array)=>{
+			array.sort(function(a,b){return a.id-b.id});
+			return array
 		},
-'floatingPoint':true,
-'negative':true,
+		'floatingPoint':true,
+		'negative':true
 	},
 	{
-'name':'RadixBitSorterObjectIntV1V2',
-'sortFunction':(array)=>{
+		'name':'RadixBitSorterObjectIntV1V2',
+		'sortFunction':(array)=>{
 			sortObjectInt(array,(x)=>x.id);
-			return array;
+			return array
 		},
-'floatingPoint':false,
-'negative':true,
+		'floatingPoint':false,
+		'negative':true
 	},
 	{
-'name':'RadixBitObjectNumberSorter',
-'sortFunction':(array)=>{
+		'name':'RadixBitObjectNumberSorter',
+		'sortFunction':(array)=>{
 			sortObjectNumber(array,(x)=>x.id);
-			return array;
+			return array
 		},
-'floatingPoint':true,
-'negative':true,
+		'floatingPoint':true,
+		'negative':true
 	},
 	{
-'name':'QuickBitObjectIntSorter',
-'sortFunction':(array)=>{
+		'name':'QuickBitObjectIntSorter',
+		'sortFunction':(array)=>{
 			quickBitSorterObjectInt(array,(x)=>x.id);
-			return array;
+			return array
 		},
-'floatingPoint':false,
-'negative':true,
+		'floatingPoint':false,
+		'negative':true
 	},
 	{
-'name':'PCountSorterObjectInt',
-'sortFunction':(array)=>{
+		'name':'PCountSorterObjectInt',
+		'sortFunction':(array)=>{
 			pCountBitSorterObjectInt(array,(x)=>x.id);
-			return array;
+			return array
 		},
-'floatingPoint':false,
-'negative':true,
-'range':2**21,
+		'floatingPoint':false,
+		'negative':true,
+		'range':2**21
 	},
 	{
-'name':'QuickBitSorterObjectIntLowMem',
-'sortFunction':(array)=>{
+		'name':'QuickBitSorterObjectIntLowMem',
+		'sortFunction':(array)=>{
 			quickBitSorterObjectIntLowMem(array,(x)=>x.id);
-			return array;
+			return array
 		},
-'floatingPoint':false,
-'negative':true,
+		'floatingPoint':false,
+		'negative':true
 	},
 ]
 let verbose=0;
@@ -115,11 +108,8 @@ let tests=[
 //{"range":1000000000,"size":40000000},Out of Memory
 ]
 //let origInt=[-488,-860,-212,-82,-35,-831,-751,-898,-329,-831,-362,-207,-862,-315,-154,-361,-141,-614,-503,-180]bug for stable
-for(let t=0;t<tests.length;t++){
-	let test=tests[t];
-	let range=test.range;
-	let size=test.size;
-	let generators=[
+for(let test of tests){
+	let range=test.range,size=test.size,generators=[
 		{
 			"name":`Positive Integer Numbers,range:${range},size:${size}`,
 			"genFunction":()=>Array.from({length:size},()=>Math.floor(Math.random()*range)),
@@ -144,65 +134,46 @@ for(let t=0;t<tests.length;t++){
 			"negative":true,
 			"floatingPoint":true
 		}
-]
-	for(let g=0;g<generators.length;g++){
-		let generator=generators[g];
-		let origArray=generator.genFunction();
-		for(let a=0;a<algorithms.length;a++){
-			let algorithm=algorithms[a];
-			algorithm.totalElapsed=0;
-		}
+	];
+	for(let G of generators){
+		let origArray=G.genFunction(),z=algorithms.length;
+		for(let a=z;a;)algorithms[--a].totalElapsed=0;
 		for(let i=0;i<iterations;i++){
 			let orig=[];
-			origArray.forEach(x=>{
-				orig.push({
-				"id":x,
-				"value":"Text"+x
-				})
-			});
-			for(let a=0;a<algorithms.length;a++){
-				let algorithm=algorithms[a];
-				if(!((generator.floatingPoint&&!algorithm.floatingPoint)||(generator.negative&&!algorithm.negative)||(algorithm.range&&algorithm.range<range))){
+			origArray.forEach(x=>orig.push({"id":x,"value":"Text"+x}));
+			for(let a=0;a<z;a++){
+				let A=algorithms[a];
+				if(!(G.floatingPoint&&!A.floatingPoint||G.negative&&!A.negative||A.range&&A.range<range)){
 					let arrayK=Array(size);
 					arrayCopy(orig,0,arrayK,0,size);
 					let start=performance.now();
-					arrayK=algorithm.sortFunction(arrayK);
-					let elapsedP=performance.now()-start;
-					let equal=true;
-					if(a===0){
-						algorithm["sortedArray"]=arrayK;
-					}else{
+					arrayK=A.sortFunction(arrayK);
+					let elapsedP=performance.now()-start,equal=true;
+					if(a){
 						let arrayJS=algorithms[0]["sortedArray"];
 						equal=testArraysEquals(arrayJS,arrayK,(firstError)=>{
-							if(verbose){
-								console.log(`Arrays Not Equal ${algorithm.name}+error at ${JSON.stringify(firstError)}`);
-							}
-							if(verbose&&arrayJS.length<300){
-								console.log("ORIG:"+JSON.stringify(origArray));
-								console.log("OK:"+JSON.stringify(arrayJS));
-								console.log("NOK:"+JSON.stringify(arrayK));
-							}
-						});
-					}
-					if(equal){
-						verbose&&console.log(`Elapsed ${algorithm.name} time:${elapsedP} ms.`);
-						algorithm.totalElapsed+=elapsedP;
-					}
+							verbose&&console.log(`Arrays Not Equal ${A.name}+error at ${JSON.stringify(firstError)}`);
+							if(verbose&&arrayJS.length<300)
+								console.log("ORIG:"+JSON.stringify(origArray)),
+								console.log("OK:"+JSON.stringify(arrayJS)),
+								console.log("NOK:"+JSON.stringify(arrayK))
+						})
+					}else A["sortedArray"]=arrayK;
+					if(equal)
+						verbose&&console.log(`Elapsed ${A.name} time:${elapsedP} ms.`),
+						A.totalElapsed+=elapsedP
 				}
 			}
 			verbose&&console.log()
 		}
 		console.log();
-		console.log(`AVG Times for test:${generator.name}`);
-		for(let a=0;a<algorithms.length;a++){
-			let algorithm=algorithms[a];
-			if(!((generator.floatingPoint&&!algorithm.floatingPoint)||(generator.negative&&!algorithm.negative)||(algorithm.range&&algorithm.range<range))){
-				if(algorithm.totalElapsed>0){
-					console.log(`${algorithm.name.padEnd(28)} time:${(algorithm.totalElapsed/iterations).toFixed(6).padStart(12)} ms.`);
-				}else{
-					console.log(`${algorithm.name.padEnd(28)} with errors.`);
-				}
-			}
+		console.log(`AVG Times for test:${G.name}`);
+		for(let a=0;a<z;){
+			let A=algorithms[a++];
+			if(!(G.floatingPoint&&!A.floatingPoint||G.negative&&!A.negative||A.range&&A.range<range))
+				A.totalElapsed
+					?console.log(`${A.name.padEnd(28)} time:${(A.totalElapsed/iterations).toFixed(6).padStart(12)} ms.`)
+					:console.log(`${A.name.padEnd(28)} with errors.`);
 		}
 	}
 }
