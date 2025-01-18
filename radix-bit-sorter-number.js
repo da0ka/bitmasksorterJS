@@ -19,7 +19,7 @@ export function radixBitSorterNumber(array,start,endP1){
 			bList=getMaskAsArrayNumber(calculateMaskNumber(arrayInt32,start,finalLeft)),
 			bList[0].length||bList[1].length||(n1=0);
 		if(n2>1)//sort positive numbers
-			bList2=getMaskAsArrayNumber(calculateMaskNumber(arrayInt32,finalLeft,endP1));
+			bList2=getMaskAsArrayNumber(calculateMaskNumber(arrayInt32,finalLeft,endP1)),
 			bList2[0].length||bList2[1].length||(n2=0);
 		let auxFloat64=new Float64Array(n1>n2?n1:n2);
 		if(bList[0].length||bList[1].length)
