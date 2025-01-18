@@ -27,9 +27,8 @@ function aFlagSortInt(array,start,endP1,bList){
 	aFlagSortIntAux(array,start,endP1,sections,sections.length-1);
 }
 function aFlagSortIntAux(array,start,endP1,sections,sectionIndex){
-	let section=sections[sectionIndex];
-	let{bits,shift,mask}=section;
-	let dRange=1<<bits,N = endP1 - start;
+	let{bits,shift,mask}=sections[sectionIndex];
+	let dRange=1<<bits,N=endP1-start;
 	let nextFree=new(N>>16?Uint32Array:N>>8?Uint16Array:Uint8Array)(dRange);
 	for(let i=start;i<endP1;)nextFree[(array[i++]&mask)>>shift]++;
 	calculateSumOffsets(true,nextFree,dRange);
